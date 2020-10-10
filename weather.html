@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="lib/jquery.js"></script>
+    <script src="lib/template-web.js"></script>
+    <style>
+        tr:hover{
+            background-color:#ccc;
+            cursor: pointer;
+        }
+        td{
+            padding:10px
+        }
+    </style>
+</head>
+
+<body>
+    <table id="weatherBiao"></table>
+    <script type="text/html" id="tpl">  
+        <thead >
+            <tr>
+                <td>地点</td>
+                <td>时间</td>
+                <td>温度</td>
+                <td>天气</td>
+                <td>风向</td>
+                <td>风力</td>
+            </tr>
+        </thead>
+        <tbody>
+            {{each weatherObj}}
+            <tr>
+                <td>杭州市</td>
+                <td>{{$value.time}}</td>
+                <td>{{$value.min_degree}}°~{{$value.max_degree}}°</td>
+                <td>{{$value.day_weather_short}}</td>
+                <td>{{$value.day_wind_direction}}</td>
+                <td>{{$value.day_wind_power}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </script>
+    <script>
+        $(function () {
+            $.ajax({
+                url: 'https://wis.qq.com/weather/common',
+                dataType: "jsonp",
+                data: {
+                    source: 'pc',
+                    weather_type: 'forecast_1h|forecast_24h',
+                    province: '浙江省',
+                    city: '杭州市'
+                },
+                success: function (data) {
+                    let weatherObj = data.data.forecast_24h
+                    console.log(weatherObj);
+                    htmlStr = template('tpl', {
+                        weatherObj
+                    });
+                    $('#weatherBiao').html(htmlStr);
+                }
+            })
+        })
+    </script>
+</body>
+
+</html>
